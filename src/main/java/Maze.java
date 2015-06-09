@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -22,12 +24,15 @@ public class Maze
 
     public void refactorMaze()
     {
-        int x = (int) Math.random() * height;
-        int y = (int) Math.random() * width;
+        Collections.sort(connectedComponents, connectedComponentsOrder);
+        List<MazeCell> connectedComponent = connectedComponents.get(0);
 
-        MazeCell cell = cells[x][y];
+//        int x = (int) Math.random() * height;
+//        int y = (int) Math.random() * width;
+        int randomIndex =  (int) (Math.random() * connectedComponent.size());
 
-        List<MazeCell> connectedComponent = getConnectedComponent(cell, connectedComponents);
+        MazeCell cell = connectedComponent.get(randomIndex);
+
         if (!cell.getUpDoor())
         {
             MazeCell upCell = getUpCellFor(cell);
@@ -228,4 +233,11 @@ public class Maze
     {
         return connectedComponents;
     }
+
+    private static final Comparator<List<MazeCell>> connectedComponentsOrder =
+            new Comparator<List<MazeCell>>() {
+                public int compare(List<MazeCell> o1, List<MazeCell> o2) {
+                    return o1.size()>o2.size()?1:-1;
+                }
+            };
 }
