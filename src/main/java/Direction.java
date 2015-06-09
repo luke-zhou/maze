@@ -1,3 +1,4 @@
+import java.lang.invoke.SwitchPoint;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,9 +22,25 @@ public enum Direction
     }
 
 
-    public Direction getRandomDirection()
+    public static Direction getRandomDirection()
     {
-        int random = (int) Math.random() * 4;
+        int random = (int) (Math.random() * 4);
         return map.get(random);
+    }
+
+    public Direction getOppositeDirection()
+    {
+        switch (this)
+        {
+            case UP:
+                return DOWN;
+            case DOWN:
+                return UP;
+            case LEFT:
+                return RIGHT;
+            default:
+                return LEFT;
+        }
+
     }
 }

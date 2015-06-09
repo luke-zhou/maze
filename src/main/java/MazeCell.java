@@ -79,22 +79,22 @@ public class MazeCell
 
     public void setLeftDoor(Boolean isOpen)
     {
-        doors.put(Direction.LEFT, isOpen);
+        setDoor(Direction.LEFT,isOpen);
     }
 
     public void setRightDoor(Boolean isOpen)
     {
-        doors.put(Direction.RIGHT, isOpen);
+        setDoor(Direction.RIGHT, isOpen);
     }
 
     public void setUpDoor(Boolean isOpen)
     {
-        doors.put(Direction.UP, isOpen);
+        setDoor(Direction.UP, isOpen);
     }
 
     public void setDownDoor(Boolean isOpen)
     {
-        doors.put(Direction.DOWN, isOpen);
+        setDoor(Direction.DOWN, isOpen);
     }
 
     @Override
@@ -102,6 +102,7 @@ public class MazeCell
     {
         return "MazeCell{" +
                 "coordinate=" + coordinate +
+                ", doors=" + doors +
                 '}';
     }
 }

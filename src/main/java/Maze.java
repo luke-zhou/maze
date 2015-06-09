@@ -24,31 +24,45 @@ public class Maze
 
     public void refactorMaze()
     {
-        Collections.sort(connectedComponents, connectedComponentsOrder);
-        List<MazeCell> connectedComponent = connectedComponents.get(0);
-
-//        int x = (int) Math.random() * height;
-//        int y = (int) Math.random() * width;
-        int randomIndex =  (int) (Math.random() * connectedComponent.size());
-
-        MazeCell cell = connectedComponent.get(randomIndex);
-
-        if (!cell.getUpDoor())
+       while(connectedComponents.size() > 1)
         {
-            MazeCell upCell = getUpCellFor(cell);
-            if(upCell!=null&&!connectedComponent.contains(upCell))
+            Collections.sort(connectedComponents, connectedComponentsOrder);
+            List<MazeCell> connectedComponent = connectedComponents.get(0);
+
+            int randomIndex = (int) (Math.random() * connectedComponent.size());
+
+            MazeCell cell = connectedComponent.get(randomIndex);
+
+//            System.out.println("cell" + cell);
+//            System.out.println("connectedComponents.size()" + connectedComponents.size());
+            Direction direction =Direction.getRandomDirection();
+//            System.out.println("direction" + direction);
+            openDoorToCell(cell, connectedComponent, direction);
+
+        }
+
+    }
+
+    private Boolean openDoorToCell(MazeCell cell, List<MazeCell> connectedComponent, Direction direction)
+    {
+        if (!cell.getDoor(direction))
+        {
+            MazeCell targetCell = getCellFor(cell, direction);
+            if (targetCell != null && !connectedComponent.contains(targetCell))
             {
-                List<MazeCell> otherConnectedComponent = getConnectedComponent(upCell, connectedComponents);
-                upCell.setDownDoor(true);
-                cell.setUpDoor(true);
+                List<MazeCell> otherConnectedComponent = getConnectedComponent(targetCell, connectedComponents);
+                targetCell.setDoor(direction.getOppositeDirection(), true);
+                cell.setDoor(direction, true);
                 List<MazeCell> mergedResult = merge(connectedComponent, otherConnectedComponent);
                 connectedComponents.remove(connectedComponent);
                 connectedComponents.remove(otherConnectedComponent);
                 connectedComponents.add(mergedResult);
 
+                return true;
             }
         }
 
+        return false;
     }
 
     public void show()
@@ -154,13 +168,13 @@ public class Maze
 
         if (cell.getUpDoor())
         {
-            MazeCell upCell = getUpCellFor(cell);
+            MazeCell upCell = getCellFor(cell, Direction.UP);
             upConnectedComponents = getConnectedComponent(upCell, connectedComponents);
         }
 
         if (cell.getLeftDoor())
         {
-            MazeCell leftCell = getLeftCellFor(cell);
+            MazeCell leftCell = getCellFor(cell, Direction.LEFT);
             leftConnectedComponents = getConnectedComponent(leftCell, connectedComponents);
         }
 
@@ -215,18 +229,24 @@ public class Maze
         return null;
     }
 
-    private MazeCell getUpCellFor(MazeCell cell)
+    private MazeCell getCellFor(MazeCell cell, Direction direction)
     {
         int originalX = cell.getCoordinate().getX();
         int originalY = cell.getCoordinate().getY();
-        return originalX > 0 ? cells[originalX - 1][originalY] : null;
-    }
 
-    private MazeCell getLeftCellFor(MazeCell cell)
-    {
-        int originalX = cell.getCoordinate().getX();
-        int originalY = cell.getCoordinate().getY();
-        return originalY > 0 ? cells[originalX][originalY - 1] : null;
+        switch (direction)
+        {
+            case UP:
+                return originalX > 0 ? cells[originalX - 1][originalY] : null;
+            case DOWN:
+                return originalX < height - 1 ? cells[originalX + 1][originalY] : null;
+            case LEFT:
+                return originalY > 0 ? cells[originalX][originalY - 1] : null;
+            case RIGHT:
+                return originalY < width - 1 ? cells[originalX][originalY + 1] : null;
+        }
+
+        return null;
     }
 
     public List<List<MazeCell>> getConnectedComponents()
@@ -235,9 +255,11 @@ public class Maze
     }
 
     private static final Comparator<List<MazeCell>> connectedComponentsOrder =
-            new Comparator<List<MazeCell>>() {
-                public int compare(List<MazeCell> o1, List<MazeCell> o2) {
-                    return o1.size()>o2.size()?1:-1;
+            new Comparator<List<MazeCell>>()
+            {
+                public int compare(List<MazeCell> o1, List<MazeCell> o2)
+                {
+                    return o1.size() > o2.size() ? 1 : -1;
                 }
             };
 }

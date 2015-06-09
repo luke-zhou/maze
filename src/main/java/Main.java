@@ -7,27 +7,29 @@ public class Main
 {
     public static void main(String[] args)
     {
-        Maze maze = new Maze(10,20);
+        Maze maze = new Maze(20,40);
 
         maze.show();
 
-        System.out.println(maze.getConnectedComponents().size());
-
-        for (List<MazeCell> group : maze.getConnectedComponents())
-        {
-           System.out.println(group);
-
-        }
-
+//        System.out.println(maze.getConnectedComponents().size());
+//
+//        for (List<MazeCell> group : maze.getConnectedComponents())
+//        {
+//           System.out.println(group);
+//
+//        }
+        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
         maze.refactorMaze();
 
-        System.out.println(maze.getConnectedComponents().size());
+        maze.show();
 
-        for (List<MazeCell> group : maze.getConnectedComponents())
-        {
-            System.out.println(group);
-
-        }
+//        System.out.println(maze.getConnectedComponents().size());
+//
+//        for (List<MazeCell> group : maze.getConnectedComponents())
+//        {
+//            System.out.println(group);
+//
+//        }
     }
 
 }
