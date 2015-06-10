@@ -10,21 +10,50 @@ public class Maze
 {
     private int height;
     private int width;
+    private double pathDensity;
     private MazeCell[][] cells;
     private List<List<MazeCell>> connectedComponents;
 
-    public Maze(int height, int width)
+    public Maze(int height, int width, double pathDensity)
     {
         this.height = height;
         this.width = width;
+        this.pathDensity = pathDensity;
         generate();
         connectedComponents = calculateConnectedComponent();
-        //refactorMaze();
+        refactorMazeConnection();
+        refactorMazeAltitude();
     }
 
-    public void refactorMaze()
+    private void refactorMazeAltitude()
     {
-       while(connectedComponents.size() > 1)
+        for (int i = 0; i < height * width; i++)
+        {
+            int x = (int) (Math.random() * height);
+            int y = (int) (Math.random() * width);
+
+            cellAltitudeIncrease(cells[x][y]);
+        }
+    }
+
+    private void cellAltitudeIncrease(MazeCell cell)
+    {
+        cell.increaseAltitude();
+
+        for (Direction direction : Direction.values())
+        {
+            MazeCell nextCell = getCellFor(cell,direction);
+            if (nextCell!=null)
+            {
+                int diff = cell.getAltitude()-nextCell.getAltitude();
+                if (diff ==2) cellAltitudeIncrease(nextCell);
+            }
+        }
+    }
+
+    public void refactorMazeConnection()
+    {
+        while (connectedComponents.size() > 1)
         {
             Collections.sort(connectedComponents, connectedComponentsOrder);
             List<MazeCell> connectedComponent = connectedComponents.get(0);
@@ -33,12 +62,8 @@ public class Maze
 
             MazeCell cell = connectedComponent.get(randomIndex);
 
-//            System.out.println("cell" + cell);
-//            System.out.println("connectedComponents.size()" + connectedComponents.size());
-            Direction direction =Direction.getRandomDirection();
-//            System.out.println("direction" + direction);
+            Direction direction = Direction.getRandomDirection();
             openDoorToCell(cell, connectedComponent, direction);
-
         }
 
     }
@@ -73,7 +98,7 @@ public class Maze
             {
                 if (i % 2 == 0 && j % 2 == 0)
                 {
-                    printCell();
+                    printCell(cells[i/2][j/2]);
                 }
                 else if (i % 2 == 0 && j % 2 == 1)
                 {
@@ -92,9 +117,9 @@ public class Maze
         }
     }
 
-    private void printCell()
+    private void printCell(MazeCell cell)
     {
-        System.out.print('*');
+        System.out.print(cell.getAltitude());
     }
 
     private void printSpace()
@@ -143,7 +168,7 @@ public class Maze
 
     private Boolean randomBoolean()
     {
-        return (int) (Math.random() * 10) < 6;
+        return Math.random() < pathDensity;
     }
 
     private List<List<MazeCell>> calculateConnectedComponent()
