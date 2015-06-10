@@ -210,25 +210,6 @@ public class Maze
         }
     }
 
-    private List<MazeCell> merge(List<MazeCell> upConnectedComponents, List<MazeCell> leftConnectedComponents)
-    {
-        List<MazeCell> mergeResult = new ArrayList<MazeCell>();
-        mergeResult.addAll(upConnectedComponents);
-        mergeResult.addAll(leftConnectedComponents);
-
-        return mergeResult;
-    }
-
-    private List<MazeCell> getConnectedComponent(MazeCell cell, List<List<MazeCell>> connectedComponents)
-    {
-        for (List<MazeCell> connectedComponent : connectedComponents)
-        {
-            if (connectedComponent.contains(cell)) return connectedComponent;
-        }
-
-        return null;
-    }
-
     private MazeCell getCellFor(MazeCell cell, Direction direction)
     {
         int originalX = cell.getCoordinate().getX();
@@ -244,6 +225,25 @@ public class Maze
                 return originalY > 0 ? cells[originalX][originalY - 1] : null;
             case RIGHT:
                 return originalY < width - 1 ? cells[originalX][originalY + 1] : null;
+        }
+
+        return null;
+    }
+
+    private List<MazeCell> merge(List<MazeCell> upConnectedComponents, List<MazeCell> leftConnectedComponents)
+    {
+        List<MazeCell> mergeResult = new ArrayList<MazeCell>();
+        mergeResult.addAll(upConnectedComponents);
+        mergeResult.addAll(leftConnectedComponents);
+
+        return mergeResult;
+    }
+
+    private List<MazeCell> getConnectedComponent(MazeCell cell, List<List<MazeCell>> connectedComponents)
+    {
+        for (List<MazeCell> connectedComponent : connectedComponents)
+        {
+            if (connectedComponent.contains(cell)) return connectedComponent;
         }
 
         return null;
