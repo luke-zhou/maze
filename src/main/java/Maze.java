@@ -9,7 +9,7 @@ import java.util.List;
 public class Maze
 {
     private static double DEFAULT_PATH_DENSITY = 0.5D;
-    private static double DEFAULT_ALTITUDE_DENSITY = 0.1D;
+    private static double DEFAULT_ALTITUDE_DENSITY = 0.5D;
 
     private int height;
     private int width;
@@ -61,7 +61,7 @@ public class Maze
 
         for (Direction direction : Direction.values())
         {
-            MazeCell nextCell = getCellFor(cell, direction);
+            MazeCell nextCell = cell.getCell(direction);
             if (nextCell != null)
             {
                 int diff = cell.getAltitude() - nextCell.getAltitude();
@@ -91,7 +91,7 @@ public class Maze
     {
         if (!cell.getDoor(direction))
         {
-            MazeCell targetCell = getCellFor(cell, direction);
+            MazeCell targetCell = cell.getCell(direction);
             if (targetCell != null && !connectedComponent.contains(targetCell))
             {
                 List<MazeCell> otherConnectedComponent = getConnectedComponent(targetCell, connectedComponents);
@@ -166,7 +166,7 @@ public class Maze
             for (int j = 0; j < width; j++)
             {
                 Point coordinate = new Point(i, j);
-                MazeCell cell = new MazeCell(coordinate);
+                MazeCell cell = new MazeCell(coordinate, this);
 
                 Boolean leftDoor = j == 0 ? false : cells[i][j - 1].getRightDoor();
                 cell.setLeftDoor(leftDoor);
@@ -212,13 +212,13 @@ public class Maze
 
         if (cell.getUpDoor())
         {
-            MazeCell upCell = getCellFor(cell, Direction.UP);
+            MazeCell upCell = cell.getCell(Direction.UP);
             upConnectedComponents = getConnectedComponent(upCell, connectedComponents);
         }
 
         if (cell.getLeftDoor())
         {
-            MazeCell leftCell = getCellFor(cell, Direction.LEFT);
+            MazeCell leftCell = cell.getCell(Direction.LEFT);
             leftConnectedComponents = getConnectedComponent(leftCell, connectedComponents);
         }
 
@@ -254,25 +254,7 @@ public class Maze
         }
     }
 
-    private MazeCell getCellFor(MazeCell cell, Direction direction)
-    {
-        int originalX = cell.getCoordinate().getX();
-        int originalY = cell.getCoordinate().getY();
 
-        switch (direction)
-        {
-            case UP:
-                return originalX > 0 ? cells[originalX - 1][originalY] : null;
-            case DOWN:
-                return originalX < height - 1 ? cells[originalX + 1][originalY] : null;
-            case LEFT:
-                return originalY > 0 ? cells[originalX][originalY - 1] : null;
-            case RIGHT:
-                return originalY < width - 1 ? cells[originalX][originalY + 1] : null;
-        }
-
-        return null;
-    }
 
     private List<MazeCell> merge(List<MazeCell> upConnectedComponents, List<MazeCell> leftConnectedComponents)
     {
@@ -293,9 +275,24 @@ public class Maze
         return null;
     }
 
+    public MazeCell getCell(int x, int y)
+    {
+       return cells[x][y];
+    }
+
     public List<List<MazeCell>> getConnectedComponents()
     {
         return connectedComponents;
+    }
+
+    public int getHeight()
+    {
+        return height;
+    }
+
+    public int getWidth()
+    {
+        return width;
     }
 
     private static final Comparator<List<MazeCell>> connectedComponentsOrder =

@@ -8,9 +8,9 @@ public class Main
 {
     public static void main(String[] args)
     {
-        System.out.println("start:"+new Date());
-        Maze maze = new Maze(25, 50);
-        System.out.println("end:"+new Date());
+        //System.out.println("start:" + new Date());
+        Maze maze = new Maze(20, 40);
+        //System.out.println("end:" + new Date());
         maze.show();
     }
 

@@ -9,10 +9,12 @@ public class MazeCell
     private Point coordinate;
     private Map<Direction, Boolean> doors;
     private int altitude;
+    private Maze maze;
 
-    public MazeCell(Point coordinate)
+    public MazeCell(Point coordinate, Maze maze)
     {
         this.coordinate = coordinate;
+        this.maze = maze;
         doors = new HashMap<Direction, Boolean>();
         altitude =0;
     }
@@ -20,6 +22,26 @@ public class MazeCell
     public void increaseAltitude()
     {
         altitude++;
+    }
+
+    public MazeCell getCell(Direction direction)
+    {
+        int originalX = coordinate.getX();
+        int originalY = coordinate.getY();
+
+        switch (direction)
+        {
+            case UP:
+                return originalX > 0 ? maze.getCell(originalX - 1,originalY) : null;
+            case DOWN:
+                return originalX < maze.getHeight() - 1 ? maze.getCell(originalX + 1,originalY) : null;
+            case LEFT:
+                return originalY > 0 ? maze.getCell(originalX,originalY - 1) : null;
+            case RIGHT:
+                return originalY < maze.getWidth() - 1 ? maze.getCell(originalX,originalY + 1) : null;
+        }
+
+        return null;
     }
 
     @Override
@@ -113,6 +135,7 @@ public class MazeCell
     {
         this.altitude = altitude;
     }
+
 
     @Override
     public String toString()
