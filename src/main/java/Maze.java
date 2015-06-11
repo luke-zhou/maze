@@ -8,17 +8,36 @@ import java.util.List;
  */
 public class Maze
 {
+    private static double DEFAULT_PATH_DENSITY = 0.5D;
+    private static double DEFAULT_ALTITUDE_DENSITY = 0.1D;
+
     private int height;
     private int width;
     private double pathDensity;
+    private double altitudeDensity;
     private MazeCell[][] cells;
     private List<List<MazeCell>> connectedComponents;
 
-    public Maze(int height, int width, double pathDensity)
+    public Maze(int height, int width, double pathDensity, double altitudeDensity)
     {
         this.height = height;
         this.width = width;
         this.pathDensity = pathDensity;
+        this.altitudeDensity = altitudeDensity;
+
+        generate();
+        connectedComponents = calculateConnectedComponent();
+        refactorMazeConnection();
+        refactorMazeAltitude();
+    }
+
+    public Maze(int height, int width)
+    {
+        this.height = height;
+        this.width = width;
+        this.pathDensity = DEFAULT_PATH_DENSITY;
+        this.altitudeDensity = DEFAULT_ALTITUDE_DENSITY;
+
         generate();
         connectedComponents = calculateConnectedComponent();
         refactorMazeConnection();
@@ -27,7 +46,7 @@ public class Maze
 
     private void refactorMazeAltitude()
     {
-        for (int i = 0; i < height * width; i++)
+        for (int i = 0; i < height * width * altitudeDensity; i++)
         {
             int x = (int) (Math.random() * height);
             int y = (int) (Math.random() * width);
@@ -42,11 +61,11 @@ public class Maze
 
         for (Direction direction : Direction.values())
         {
-            MazeCell nextCell = getCellFor(cell,direction);
-            if (nextCell!=null)
+            MazeCell nextCell = getCellFor(cell, direction);
+            if (nextCell != null)
             {
-                int diff = cell.getAltitude()-nextCell.getAltitude();
-                if (diff ==2) cellAltitudeIncrease(nextCell);
+                int diff = cell.getAltitude() - nextCell.getAltitude();
+                if (diff == 2) cellAltitudeIncrease(nextCell);
             }
         }
     }
@@ -98,7 +117,7 @@ public class Maze
             {
                 if (i % 2 == 0 && j % 2 == 0)
                 {
-                    printCell(cells[i/2][j/2]);
+                    printCell(cells[i / 2][j / 2]);
                 }
                 else if (i % 2 == 0 && j % 2 == 1)
                 {
@@ -284,7 +303,7 @@ public class Maze
             {
                 public int compare(List<MazeCell> o1, List<MazeCell> o2)
                 {
-                    return o1.size() > o2.size() ? 1 : -1;
+                    return o1.size() > o2.size() ? 1 : (o1.size() < o2.size() ? -1 : 0);
                 }
             };
 }

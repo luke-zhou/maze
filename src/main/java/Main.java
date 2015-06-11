@@ -1,3 +1,4 @@
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -7,8 +8,9 @@ public class Main
 {
     public static void main(String[] args)
     {
-        Maze maze = new Maze(20,40, 0.5);
-
+        System.out.println("start:"+new Date());
+        Maze maze = new Maze(25, 50);
+        System.out.println("end:"+new Date());
         maze.show();
     }
 
