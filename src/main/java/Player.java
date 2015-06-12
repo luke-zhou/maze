@@ -6,15 +6,39 @@
  */
 public class Player
 {
-    private MazeCell currentCell;
+    private MazeCell current;
+    private MazeCell start;
+    private MazeCell end;
+    private int steps;
 
-    public MazeCell getCurrentCell()
+    public Player(Maze maze)
     {
-        return currentCell;
+        this.steps = 0;
+        this.start = maze.getStart();
+        this.end = maze.getEnd();
+        this.current = start;
+        maze.setPlayer(this);
     }
 
-    public void setCurrentCell(MazeCell currentCell)
+    public boolean move(Direction direction)
     {
-        this.currentCell = currentCell;
+        if (current.getDoor(direction))
+        {
+            MazeCell targetCell = current.getCell(direction);
+            current = targetCell;
+            steps++;
+        }
+
+        return current.getDoor(direction);
+    }
+
+    public MazeCell getCurrent()
+    {
+        return current;
+    }
+
+    public void setCurrent(MazeCell current)
+    {
+        this.current = current;
     }
 }

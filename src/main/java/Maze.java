@@ -17,6 +17,9 @@ public class Maze
     private double altitudeDensity;
     private MazeCell[][] cells;
     private List<List<MazeCell>> connectedComponents;
+    private MazeCell start;
+    private MazeCell end;
+    private Player player;
 
     public Maze(int height, int width, double pathDensity, double altitudeDensity)
     {
@@ -29,19 +32,15 @@ public class Maze
         connectedComponents = calculateConnectedComponent();
         refactorMazeConnection();
         refactorMazeAltitude();
+
+        start = cells[0][0];
+        end = cells[height-1][width-1];
+
     }
 
     public Maze(int height, int width)
     {
-        this.height = height;
-        this.width = width;
-        this.pathDensity = DEFAULT_PATH_DENSITY;
-        this.altitudeDensity = DEFAULT_ALTITUDE_DENSITY;
-
-        generate();
-        connectedComponents = calculateConnectedComponent();
-        refactorMazeConnection();
-        refactorMazeAltitude();
+        this(height,width,DEFAULT_PATH_DENSITY, DEFAULT_ALTITUDE_DENSITY);
     }
 
     private void refactorMazeAltitude()
@@ -138,7 +137,8 @@ public class Maze
 
     private void printCell(MazeCell cell)
     {
-        System.out.print(cell.getAltitude());
+        String printOutChar = (player!=null&&player.getCurrent().equals(cell)? "*":String.valueOf(cell.getAltitude()));
+        System.out.print(printOutChar);
     }
 
     private void printSpace()
@@ -293,6 +293,26 @@ public class Maze
     public int getWidth()
     {
         return width;
+    }
+
+    public MazeCell getStart()
+    {
+        return start;
+    }
+
+    public MazeCell getEnd()
+    {
+        return end;
+    }
+
+    public Player getPlayer()
+    {
+        return player;
+    }
+
+    public void setPlayer(Player player)
+    {
+        this.player = player;
     }
 
     private static final Comparator<List<MazeCell>> connectedComponentsOrder =

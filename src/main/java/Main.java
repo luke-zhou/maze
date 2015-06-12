@@ -12,6 +12,17 @@ public class Main
         Maze maze = new Maze(20, 40);
         //System.out.println("end:" + new Date());
         maze.show();
+
+        Player player = new Player(maze);
+
+        maze.show();
+
+        while(player.move(Direction.RIGHT))
+        {
+
+        }
+
+        maze.show();
     }
 
 }
